@@ -12,13 +12,14 @@ FEATURE_SETS = {
     'Age': list(set([22, 38, 26])),
     'Parch': list(set([0])),
     'Pclass': list(set([1, 2, 3])),
-    'Sex': list(set(['male', 'female'])),
+    'Sex': list(set([0, 1])),
     'Survived': list(set([0, 1])),
     'SibSp': list(set([1, 0])),
     'PassengerId': list(set([1, 2, 3])),
     'Ticket': list(set(['A/5 21171', 'PC 17599', 'STON/O2. 3101282'])),
     'Cabin': list(set([None, 'C85']))
 }
+GENDER_PARSE = {'male': 0, 'female': 1}
 HEADERS = ['PassengerId', 'Survived', 'Pclass', 'Name', 'Sex', 'Age', 'SibSp',
            'Parch', 'Ticket', 'Fare', 'Cabin', 'Embarked']
 NUM_PASSENGERS = 3
@@ -47,7 +48,7 @@ class TestPassenger:
         assert passenger.survived == survived
         assert passenger.pclass == pclass
         assert passenger.name == name
-        assert passenger.sex == sex
+        assert passenger.sex == GENDER_PARSE[sex]
         assert passenger.age == age
         assert passenger.sibsp == sibsp
         assert passenger.parch == parch

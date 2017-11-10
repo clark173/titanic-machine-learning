@@ -2,6 +2,9 @@ import csv
 import pandas
 
 
+GENDER_PARSE = {'male': 0, 'female': 1}
+
+
 class Passenger:
     def __init__(self, passengerid, survived, pclass, name, sex, age, sibsp,
                  parch, ticket, fare, cabin, embarked):
@@ -9,7 +12,7 @@ class Passenger:
         self._survived = survived
         self._pclass = pclass
         self._name = name
-        self._sex = sex
+        self._sex = GENDER_PARSE[sex]
         self._age = age
         self._sibsp = sibsp
         self._parch = parch
@@ -74,8 +77,7 @@ class Passengers:
         self._feature_sets = {}
 
         passenger_data = pandas.read_csv(input_file, header=0)
-        passenger_data = passenger_data.where((pandas.notnull(passenger_data)),
-                                              None)
+        passenger_data = self._edit_passenger_data(passenger_data)
         self._read_input_file(input_file)
         self._build_feature_sets(passenger_data)
 
@@ -89,6 +91,12 @@ class Passengers:
     @property
     def feature_sets(self):
         return self._feature_sets
+
+    def _edit_passenger_data(self, passenger_data):
+        data = passenger_data.where((pandas.notnull(passenger_data)), None)
+        data = data.replace('female', GENDER_PARSE['female'])
+        data = data.replace('male', GENDER_PARSE['male'])
+        return data
 
     def _read_input_file(self, input_file):
         with open(input_file, 'rb') as passenger_list:
