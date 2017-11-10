@@ -73,7 +73,9 @@ class Passengers:
         self._header = []
         self._feature_sets = {}
 
-        passenger_data = pandas.read_csv(input_file, header=0).dropna()
+        passenger_data = pandas.read_csv(input_file, header=0)
+        passenger_data = passenger_data.where((pandas.notnull(passenger_data)),
+                                              None)
         self._read_input_file(input_file)
         self._build_feature_sets(passenger_data)
 
