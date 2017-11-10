@@ -79,9 +79,6 @@ class Passengers:
         self._read_input_file(input_file)
         self._build_feature_sets(passenger_data)
 
-    def __expr__(self):
-        return self._passengers
-
     def __iter__(self):
         return iter(self._passengers)
 
