@@ -1,6 +1,9 @@
 # Passenger headers
-HEADER = ['PassengerId', 'Survived', 'Pclass', 'Name', 'Sex', 'Age', 'SibSp',
-          'Parch', 'Ticket', 'Fare', 'Cabin', 'Embarked']
+TRAIN_HEADER_LIST = ['Survived', 'Pclass', 'Sex', 'Age', 'SibSp', 'Parch', 'Fare', 'Embarked']
+TRAIN_LIST_FOR_PASS_ID = ['PassengerId', 'Survived', 'Pclass', 'Sex', 'Age', 'SibSp', 'Parch', 'Fare', 'Embarked']
+TEST_HEADER_LIST = ['Pclass', 'Sex', 'Age', 'SibSp', 'Parch', 'Fare', 'Embarked']
+TEST_LIST_FOR_PASS_ID = ['PassengerId', 'Pclass', 'Sex', 'Age', 'SibSp', 'Parch', 'Fare', 'Embarked']
+
 # Data field filters
 GENDER_PARSE = {'male': 0, 'female': 1}
 PORT_OF_EMBARKMENT = {'Q': 0, 'S': 1, 'C': 2}
