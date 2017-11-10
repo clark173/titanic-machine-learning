@@ -3,6 +3,7 @@ import pandas
 
 
 GENDER_PARSE = {'male': 0, 'female': 1}
+PORT_OF_EMBARKMENT = {'Q': 0, 'S': 1, 'C': 2, '': -1}
 
 
 class Passenger:
@@ -19,7 +20,7 @@ class Passenger:
         self._ticket = ticket
         self._fare = fare
         self._cabin = cabin
-        self._embarked = embarked
+        self._embarked = PORT_OF_EMBARKMENT[embarked]
 
     @property
     def passengerid(self):
@@ -92,10 +93,12 @@ class Passengers:
     def feature_sets(self):
         return self._feature_sets
 
-    def _edit_passenger_data(self, passenger_data):
-        data = passenger_data.where((pandas.notnull(passenger_data)), None)
-        data = data.replace('female', GENDER_PARSE['female'])
-        data = data.replace('male', GENDER_PARSE['male'])
+    def _edit_passenger_data(self, data):
+        for gender in GENDER_PARSE.keys():
+            data = data.replace(gender, GENDER_PARSE[gender])
+        for port in PORT_OF_EMBARKMENT.keys():
+            data = data.replace(port, PORT_OF_EMBARKMENT[port])
+        data = data.where((pandas.notnull(data)), None)
         return data
 
     def _read_input_file(self, input_file):

@@ -8,7 +8,7 @@ FEATURE_SETS = {
              'Cumings, Mrs. John Bradley (Florence Briggs Thayer)',
              'Heikkinen, Miss. Laina'
             ])),
-    'Embarked': list(set(['S', 'C'])),
+    'Embarked': list(set([1, 2])),
     'Age': list(set([22, 38, 26])),
     'Parch': list(set([0])),
     'Pclass': list(set([1, 2, 3])),
@@ -23,6 +23,7 @@ GENDER_PARSE = {'male': 0, 'female': 1}
 HEADERS = ['PassengerId', 'Survived', 'Pclass', 'Name', 'Sex', 'Age', 'SibSp',
            'Parch', 'Ticket', 'Fare', 'Cabin', 'Embarked']
 NUM_PASSENGERS = 3
+PORT_OF_EMBARKMENT = {'Q': 0, 'S': 1, 'C': 2, '': -1}
 SAMPLE_DATA = 'tests/sample_training.csv'
 
 
@@ -55,7 +56,7 @@ class TestPassenger:
         assert passenger.ticket == ticket
         assert passenger.fare == fare
         assert passenger.cabin == cabin
-        assert passenger.embarked == embarked
+        assert passenger.embarked == PORT_OF_EMBARKMENT[embarked]
 
 
 class TestPassengers:
