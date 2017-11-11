@@ -1,16 +1,11 @@
+import constants as c
 import csv
 import pandas
 
 
-HEADER = ['PassengerId', 'Survived', 'Pclass', 'Name', 'Sex', 'Age', 'SibSp',
-          'Parch', 'Ticket', 'Fare', 'Cabin', 'Embarked']
-GENDER_PARSE = {'male': 0, 'female': 1}
-PORT_OF_EMBARKMENT = {'Q': 0, 'S': 1, 'C': 2, '': -1}
-
-
 class Passengers:
     def __init__(self, input_file):
-        self._header = HEADER
+        self._header = c.HEADER
         self._feature_sets = {}
 
         passenger_data = pandas.read_csv(input_file, header=0)
@@ -26,10 +21,10 @@ class Passengers:
         return self._feature_sets
 
     def _edit_passenger_data(self, data):
-        for gender in GENDER_PARSE.keys():
-            data = data.replace(gender, GENDER_PARSE[gender])
-        for port in PORT_OF_EMBARKMENT.keys():
-            data = data.replace(port, PORT_OF_EMBARKMENT[port])
+        for gender in c.GENDER_PARSE.keys():
+            data = data.replace(gender, c.GENDER_PARSE[gender])
+        for port in c.PORT_OF_EMBARKMENT.keys():
+            data = data.replace(port, c.PORT_OF_EMBARKMENT[port])
         data = data.where((pandas.notnull(data)), None)
         return data
 
