@@ -8,6 +8,7 @@ from passengers import Passengers
 class Features:
     def __init__(self):
         self._saved_passenger_id_list = []
+        self._saved_predictions_dict = {}
 
     def analyze(self):
         train_passengers = self._get_passengers(c.TRAIN_FILE, predict=False)
@@ -30,6 +31,7 @@ class Features:
                                                     test_no_age_passengers,
                                                     c.COLUMN_X_DATA_SET_NO_AGE,
                                                     'model_data_no_age')
+        self._create_csv()
 
     def _get_passengers(self, file_to_read, predict=False, omit_age=False):
         return Passengers(file_to_read, predict, omit_age)
@@ -60,25 +62,30 @@ class Features:
             return c.SURVIVED
         return c.DIED
 
-    def _create_csv(self, results_list):
+    def _create_csv(self):
         with open('results.csv', 'wb') as csvfile:
             writer = csv.writer(csvfile, delimiter=',')
             writer.writerow(['PassengerId', 'Survived'])
-            for row in results_list:
-                writer.writerow(row)
+            start_pass_id = min(self._saved_passenger_id_list)
+            end_pass_id = max(self._saved_passenger_id_list)
+            for pass_id in range(start_pass_id, end_pass_id + 1):
+                writer.writerow([str(pass_id), self._saved_predictions_dict[pass_id]])
 
     def _build_predictions_file(self, predictions, test_passengers):
         results_list = []
         passengerid = 0
         for prediction in predictions:
-            if test_passengers.passenger_id_list[passengerid] in self._passenger_id_list:
+            pass_id = test_passengers.passenger_id_list[passengerid]
+            if pass_id in self._saved_passenger_id_list:
                 continue
             result = self._prediction(prediction)
-            results_list.append([test_passengers.passenger_id_list[passengerid],
-                                 result])
-            self._passenger_id_list.append(test_passengers.passenger_id_list[passengerid])
+            results_list.append([pass_id, result])
+            self._saved_passenger_id_list.append(pass_id)
+            self._saved_predictions_dict[pass_id] = result
             passengerid += 1
         print results_list
+        print self._saved_passenger_id_list
+        print test_passengers.passenger_id_list
 
     def _create_classifier(self, feature_columns, train_passengers, test_passengers, data_set, model_dir):
         classifier = tf.estimator.DNNClassifier(
@@ -93,4 +100,3 @@ class Features:
         print classifier.evaluate(input_fn=train_input_fn)['accuracy'] * 100.0
         predictions = list(classifier.predict(input_fn=predict_input_fn))
         self._build_predictions_file(predictions, test_passengers)
-        self._create_csv(results_list)
