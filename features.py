@@ -6,6 +6,9 @@ from passengers import Passengers
 
 
 class Features:
+    def __init__(self):
+        self._saved_passenger_id_list = []
+
     def analyze(self):
         train_passengers = self._get_passengers(c.TRAIN_FILE, predict=False)
         test_passengers = self._get_passengers(c.TEST_FILE, predict=True)
@@ -64,14 +67,18 @@ class Features:
             for row in results_list:
                 writer.writerow(row)
 
-    def _build_predictions_file(self, predictions):
+    def _build_predictions_file(self, predictions, test_passengers):
         results_list = []
         passengerid = 0
         for prediction in predictions:
+            if test_passengers.passenger_id_list[passengerid] in self._passenger_id_list:
+                continue
             result = self._prediction(prediction)
             results_list.append([test_passengers.passenger_id_list[passengerid],
                                  result])
+            self._passenger_id_list.append(test_passengers.passenger_id_list[passengerid])
             passengerid += 1
+        print results_list
 
     def _create_classifier(self, feature_columns, train_passengers, test_passengers, data_set, model_dir):
         classifier = tf.estimator.DNNClassifier(
@@ -85,5 +92,5 @@ class Features:
         classifier.train(input_fn=train_input_fn, steps=700)
         print classifier.evaluate(input_fn=train_input_fn)['accuracy'] * 100.0
         predictions = list(classifier.predict(input_fn=predict_input_fn))
-        self._build_predictions_file(predictions)
+        self._build_predictions_file(predictions, test_passengers)
         self._create_csv(results_list)
