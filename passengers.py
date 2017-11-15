@@ -3,15 +3,23 @@ import pandas
 
 
 class Passengers:
-    def __init__(self, input_file, predict):
+    def __init__(self, input_file, predict=False, ommit_age=False):
         self._passenger_id_list = []
         self._data_set = None
         if predict:
-            self._header = c.TEST_HEADER_LIST
-            self._pass_id_list = c.TEST_LIST_FOR_PASS_ID
+            if ommit_age:
+                self._header = c.TEST_HEADER_NO_AGE
+                self._pass_id_list = c.TEST_LIST_PASS_ID_NO_AGE
+            else:
+                self._header = c.TEST_HEADER_LIST
+                self._pass_id_list = c.TEST_LIST_FOR_PASS_ID
         else:
-            self._header = c.TRAIN_HEADER_LIST
-            self._pass_id_list = c.TRAIN_LIST_FOR_PASS_ID
+            if ommit_age:
+                self._header = c.TRAIN_HEADER_NO_AGE
+                self._pass_id_list = c.TRAIN_LIST_PASS_ID_NO_AGE
+            else:
+                self._header = c.TRAIN_HEADER_LIST
+                self._pass_id_list = c.TRAIN_LIST_FOR_PASS_ID
         self._feature_sets = {}
         passenger_data = pandas.read_csv(input_file, header=0)
         self._data_set = self._edit_passenger_data(passenger_data)
