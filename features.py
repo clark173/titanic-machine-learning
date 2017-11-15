@@ -69,23 +69,26 @@ class Features:
             start_pass_id = min(self._saved_passenger_id_list)
             end_pass_id = max(self._saved_passenger_id_list)
             for pass_id in range(start_pass_id, end_pass_id + 1):
-                writer.writerow([str(pass_id), self._saved_predictions_dict[pass_id]])
+                try:
+                    writer.writerow([str(pass_id), self._saved_predictions_dict[pass_id]])
+                except KeyError:
+                    # For the moment, if a passenger doesn't show up because
+                    # they have multiple empty fields, default to them dying
+                    # due to the low survivial rate of the disaster.
+                    writer.writerow([str(pass_id), c.DIED])
 
     def _build_predictions_file(self, predictions, test_passengers):
         results_list = []
         passengerid = 0
         for prediction in predictions:
             pass_id = test_passengers.passenger_id_list[passengerid]
+            passengerid += 1
             if pass_id in self._saved_passenger_id_list:
                 continue
             result = self._prediction(prediction)
             results_list.append([pass_id, result])
             self._saved_passenger_id_list.append(pass_id)
             self._saved_predictions_dict[pass_id] = result
-            passengerid += 1
-        print results_list
-        print self._saved_passenger_id_list
-        print test_passengers.passenger_id_list
 
     def _create_classifier(self, feature_columns, train_passengers, test_passengers, data_set, model_dir):
         classifier = tf.estimator.DNNClassifier(
